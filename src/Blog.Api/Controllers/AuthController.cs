@@ -80,6 +80,7 @@ namespace Blog.api.Controllers
             return RequestResponse( await GenerateJwtToken( login.Email ) );
         }
 
+        [ApiExplorerSettings( IgnoreApi = true )]
         public async Task<LoginResponseViewModel> GenerateJwtToken( string email )
         {
 
