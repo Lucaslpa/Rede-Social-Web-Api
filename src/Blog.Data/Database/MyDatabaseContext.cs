@@ -10,7 +10,7 @@ namespace Blog.Data.database
     {
         public MyDatabaseContext()
         {
-            DbPath = "C:\\Users\\l1luc\\AppData\\Local\\blog.db";
+            DbPath = Path.Combine( Directory.GetCurrentDirectory(), "Database" , "Db" , "blog.db" ); ;
             ChangeTracker.LazyLoadingEnabled = false;
         }
 
