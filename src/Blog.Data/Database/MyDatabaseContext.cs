@@ -10,8 +10,8 @@ namespace Blog.Data.database
     {
         public MyDatabaseContext()
         {
-            DbPath = Path.Combine( Directory.GetCurrentDirectory(), "Database" , "Db" , "blog.db" ); ;
-            ChangeTracker.LazyLoadingEnabled = false;
+            string appDataPath = Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData );
+            DbPath = Path.Combine( appDataPath , "blog.db" ); ;
         }
 
         protected override void OnConfiguring( DbContextOptionsBuilder options )
