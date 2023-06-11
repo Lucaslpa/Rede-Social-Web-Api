@@ -2,12 +2,12 @@
 using Blog.api.ViewModels;
 using Blog.Business.Interfaces;
 using Blog.Business.Models;
-using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.api.Controllers
 {
+    [Authorize]
     [Route( "api/[controller]" )]
     public class PostsController : Controller
     {
@@ -44,7 +44,7 @@ namespace Blog.api.Controllers
         }
 
 
-        [Authorize]
+
         [HttpPost( "{userId}" )]
         public async Task<ActionResult> Post( [FromBody] PostViewModel PostViewModel , string userId )
         {

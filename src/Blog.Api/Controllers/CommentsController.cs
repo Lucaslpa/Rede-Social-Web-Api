@@ -2,10 +2,12 @@
 using Blog.api.ViewModels;
 using Blog.Business.Interfaces;
 using Blog.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.api.Controllers
 {
+    [Authorize]
     [Route( "api/[controller]" )]
     public class CommentsController : Controller
     {
