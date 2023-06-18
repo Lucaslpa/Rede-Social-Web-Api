@@ -29,7 +29,7 @@ namespace Blog.api.Configuration
 
                     ValidateIssuerSigningKey = true ,
                     IssuerSigningKey = new SymmetricSecurityKey( key ) ,
-                    ValidateIssuer = false ,
+                    ValidateIssuer = true ,
                     ValidIssuer = jwtSettings.Issuer ,
                     ValidateAudience = true ,
                     ValidAudience = jwtSettings.Issuer ,

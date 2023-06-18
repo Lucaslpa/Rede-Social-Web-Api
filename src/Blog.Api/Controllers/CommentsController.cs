@@ -4,6 +4,7 @@ using Blog.Business.Interfaces;
 using Blog.Business.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Blog.api.Controllers
 {
@@ -30,6 +31,7 @@ namespace Blog.api.Controllers
             return RequestResponse( posts );
         }
 
+
         [HttpGet( "Post/{postId}/page/{page}" )]
         public async Task<ActionResult> GetAllCommentsByPostId( Guid postId , int page )
         {
@@ -38,12 +40,14 @@ namespace Blog.api.Controllers
             return RequestResponse( posts );
         }
 
+
         [HttpGet( "User/{userId}/page/{page}" )]
         public async Task<ActionResult> GetAllCommentsByUserId( Guid userId , int page )
         {
             var posts = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetCommentsByUserID( userId , page ) );
             return RequestResponse( posts );
         }
+
 
         [HttpGet( "{id}" )]
         public async Task<ActionResult> Get( Guid id )
@@ -57,6 +61,7 @@ namespace Blog.api.Controllers
 
             return RequestResponse( postViewModel );
         }
+
 
         [HttpPost( "{UserId}/{PostId}" )]
         public async Task<ActionResult> Post( [FromBody] CommentViewModel commentViewModel , Guid UserId , Guid PostId )
@@ -77,9 +82,12 @@ namespace Blog.api.Controllers
             return RequestResponse( comment );
         }
 
+
         [HttpPut( "{id}" )]
         public async Task<ActionResult> Put( [FromBody] CommentViewModel commentViewModel , Guid id )
         {
+
+
 
             if (!ModelState.IsValid) return RequestResponse( ModelState );
 
@@ -88,8 +96,13 @@ namespace Blog.api.Controllers
                 NotifyErrors( "O Id informado no body não é igual ao id na url" );
                 return RequestResponse( ModelState );
             }
-
+            string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
             var existingComment = await CommentsRespository.GetByID( id );
+
+            if (existingComment.UserId != userId)
+            {
+                return RequestResponse( ModelState );
+            }
 
             existingComment.Text = commentViewModel.Text;
             existingComment.Date = (DateTime)commentViewModel.Date;
@@ -103,10 +116,19 @@ namespace Blog.api.Controllers
             return RequestResponse( existingComment );
         }
 
+
         [HttpDelete( "{id}" )]
         public async Task<ActionResult> Delete( Guid id )
         {
-            await CommentsRespository.Delete( id );
+            string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
+
+            var comment = await CommentsRespository.GetByID( id );
+
+            if (comment.UserId == userId)
+            {
+                await CommentsRespository.Delete( id );
+            }
+
             return RequestResponse();
         }
     }

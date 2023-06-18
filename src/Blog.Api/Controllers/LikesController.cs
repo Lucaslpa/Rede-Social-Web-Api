@@ -5,6 +5,7 @@ using Blog.Business.Models;
 using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Blog.api.Controllers
 {
@@ -62,7 +63,6 @@ namespace Blog.api.Controllers
         {
             var likes = await LikesRepository.GetLikesByUserID( userId , page );
 
-
             var likesViewModel = Mapper.Map<GetAllResponse<LikesViewModel>>( likes );
 
             if (likes == null)
@@ -115,7 +115,15 @@ namespace Blog.api.Controllers
         [HttpDelete( "{id}" )]
         public async Task<ActionResult> Delete( Guid id )
         {
-            await LikesRepository.Delete( id );
+            string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
+
+            var like = await LikesRepository.GetByID( id );
+
+            if (like.UserId != userId)
+            {
+                await LikesRepository.Delete( id );
+            }
+
             return RequestResponse();
         }
     }

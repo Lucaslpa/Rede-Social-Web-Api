@@ -112,6 +112,7 @@ namespace Blog.api.Controllers
             {
                 Token = encodedToken ,
                 ExpiresInSeconds = jwtSettings.ExpirationTimeInHours * 3600 ,
+                UserID = user.Id ,
             };
 
         }

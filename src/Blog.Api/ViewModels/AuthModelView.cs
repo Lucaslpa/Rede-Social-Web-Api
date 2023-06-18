@@ -6,6 +6,8 @@ namespace Blog.api.ViewModels
     {
         public int ExpiresInSeconds { get; set; }
         public string Token { get; set; }
+
+        public string UserID { get; set; }
     }
 
     public class LoginRequestViewModel

@@ -8,6 +8,7 @@ namespace Blog.api.Configuration
         {
             service.AddControllers().AddNewtonsoftJson( options =>
             {
+                //configuration to ignore the loop in the json
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
             } );

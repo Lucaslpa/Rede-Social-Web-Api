@@ -4,6 +4,7 @@ using Blog.Business.Interfaces;
 using Blog.Business.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Blog.api.Controllers
 {
@@ -75,10 +76,15 @@ namespace Blog.api.Controllers
         [HttpPut( "{id}" )]
         public async Task<ActionResult> Put( [FromBody] PostViewModel PostViewModel , Guid id )
         {
+
+            string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
             var existingPost = await PostRepository.GetByID( id );
 
             if (existingPost == null)
                 return NotFound();
+
+            if (existingPost.UserId != userId)
+                return RequestResponse( ModelState );
 
             existingPost.Id = id;
             existingPost.Text = PostViewModel.Text;
@@ -95,8 +101,17 @@ namespace Blog.api.Controllers
         [HttpDelete( "{id}" )]
         public async Task<ActionResult> Delete( string id )
         {
-            var Id = new Guid( id );
-            await PostRepository.Delete( Id );
+
+            string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
+
+            var post = await PostRepository.GetByID( new Guid( id ) );
+
+            if (post.UserId == userId)
+            {
+                var Id = new Guid( id );
+                await PostRepository.Delete( Id );
+            }
+
             return RequestResponse();
         }
     }

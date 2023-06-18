@@ -53,7 +53,7 @@ namespace Blog.Data.repository
         }
         public async Task<TEntity> GetByID( Guid id )
         {
-            return await DbSet.FindAsync( id );
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync( p => p.Id == id );
         }
         public async Task<IEnumerable<TEntity>> Search( System.Linq.Expressions.Expression<Func<TEntity , bool>> predicate )
         {
