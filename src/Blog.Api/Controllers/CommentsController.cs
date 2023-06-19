@@ -121,10 +121,11 @@ namespace Blog.api.Controllers
         public async Task<ActionResult> Delete( Guid id )
         {
             string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
+            var adm = User.Claims.Any( c => c.Type == ClaimTypes.Role && c.Value == "Admin" );
 
             var comment = await CommentsRespository.GetByID( id );
 
-            if (comment.UserId == userId)
+            if (comment.UserId == userId || adm)
             {
                 await CommentsRespository.Delete( id );
             }

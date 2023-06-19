@@ -103,10 +103,11 @@ namespace Blog.api.Controllers
         {
 
             string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
+            var adm = User.Claims.Any( c => c.Type == ClaimTypes.Role && c.Value == "Admin" );
 
             var post = await PostRepository.GetByID( new Guid( id ) );
 
-            if (post.UserId == userId)
+            if (post.UserId == userId || adm)
             {
                 var Id = new Guid( id );
                 await PostRepository.Delete( Id );

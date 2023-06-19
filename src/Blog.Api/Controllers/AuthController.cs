@@ -85,7 +85,7 @@ namespace Blog.api.Controllers
         {
 
             var user = await UserManager.FindByEmailAsync( email );
-
+            var roles = await UserManager.GetRolesAsync( user );
 
             var jwtSettings = Configuration.GetSection( "JwtSettings" ).Get<JwtSettings>();
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -96,6 +96,12 @@ namespace Blog.api.Controllers
             claimsIdentity.AddClaim( new Claim( ClaimTypes.Surname , user.Surname ) );
             claimsIdentity.AddClaim( new Claim( ClaimTypes.Email , user.Email ) );
             claimsIdentity.AddClaim( new Claim( ClaimTypes.NameIdentifier , user.Id ) );
+
+            foreach (var role in roles)
+            {
+                claimsIdentity.AddClaim( new Claim( ClaimTypes.Role , role ) );
+            }
+
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
