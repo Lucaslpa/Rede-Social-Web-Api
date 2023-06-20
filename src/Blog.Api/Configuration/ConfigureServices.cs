@@ -13,11 +13,7 @@ namespace Blog.api.Configuration
             Services.AddNewtonSoftConfiguration();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             Services.AddEndpointsApiExplorer();
-            Services.AddSwaggerGen( c =>
-            {
-                c.SwaggerDoc( "v1" , new OpenApiInfo { Title = "Rede social - V1" , Version = "v1" } );
-                c.SwaggerDoc( "v2" , new OpenApiInfo { Title = "Rede social - V2" , Version = "v2" } );
-            } );
+            Services.SwaggerConfig();
             Services.AddDependencyInjection();
             Services.AddAuthorization();
             Services.AddDbContext<MyDatabaseContext>();
