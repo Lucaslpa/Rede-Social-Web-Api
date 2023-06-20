@@ -1,7 +1,7 @@
 using Blog.api.Configuration;
 using Blog.Data.database;
-
-
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder( args );
 var Services = builder.Services;
@@ -16,7 +16,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI( options =>
+    {
+        foreach (var description in app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint( $"/swagger/{description.GroupName}/swagger.json" , description.GroupName.ToUpperInvariant() );
+        }
+
+        options.DocExpansion( DocExpansion.List );
+    } );
 }
 
 

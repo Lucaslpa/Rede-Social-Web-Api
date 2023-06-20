@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace Blog.api.Controllers
+namespace Blog.api.Controllers.V1
 {
     [Authorize]
-    [Route( "api/[controller]" )]
+    [ApiController]
+    [ApiVersion( "1" )]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class LikesController : Controller
     {
 

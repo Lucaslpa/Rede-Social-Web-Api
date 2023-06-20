@@ -11,9 +11,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Blog.api.Controllers
+namespace Blog.api.Controllers.V2
 {
-    [Route( "api/[controller]" )]
+    [ApiController]
+    [ApiVersion( "2" )]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class AuthController : Controller
     {
         UserManager<User> UserManager;
@@ -77,7 +79,7 @@ namespace Blog.api.Controllers
                 return RequestResponse( new { message = "Login falhou" } );
             }
 
-            return RequestResponse( await GenerateJwtToken( login.Email ) );
+            return RequestResponse( new { text = "login v2" } );
         }
 
         [ApiExplorerSettings( IgnoreApi = true )]
