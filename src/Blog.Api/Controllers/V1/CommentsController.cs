@@ -27,46 +27,44 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpGet( "page/{page}" )]
-        public async Task<ActionResult> GetAll( int page )
+        public async Task<ActionResult<GetAllResponse<CommentViewModel>>> GetAll( int page )
         {
-            var posts = await CommentsRespository.GetAll( page );
-            return RequestResponse( posts );
+            var comments = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetAll( page ) );
+            return RequestResponse( comments );
         }
 
 
         [HttpGet( "Post/{postId}/page/{page}" )]
-        public async Task<ActionResult> GetAllCommentsByPostId( Guid postId , int page )
+        public async Task<ActionResult<GetAllResponse<CommentViewModel>>> GetAllCommentsByPostId( Guid postId , int page )
         {
-            var posts = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetCommentsByPostID( postId , page ) );
+            var comments = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetCommentsByPostID( postId , page ) );
 
-            return RequestResponse( posts );
+            return RequestResponse( comments );
         }
 
 
         [HttpGet( "User/{userId}/page/{page}" )]
-        public async Task<ActionResult> GetAllCommentsByUserId( Guid userId , int page )
+        public async Task<ActionResult<GetAllResponse<CommentViewModel>>> GetAllCommentsByUserId( Guid userId , int page )
         {
-            var posts = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetCommentsByUserID( userId , page ) );
-            return RequestResponse( posts );
+            var comments = Mapper.Map<GetAllResponse<CommentViewModel>>( await CommentsRespository.GetCommentsByUserID( userId , page ) );
+            return RequestResponse( comments );
         }
 
 
         [HttpGet( "{id}" )]
-        public async Task<ActionResult> Get( Guid id )
+        public async Task<ActionResult<CommentViewModel>> Get( Guid id )
         {
-            var post = await CommentsRespository.GetByID( id );
+            var commentViewModel = Mapper.Map<CommentViewModel>( await CommentsRespository.GetByID( id ) );
 
-            var postViewModel = Mapper.Map<PostViewModel>( post );
-
-            if (post == null)
+            if (commentViewModel == null)
                 return NotFound();
 
-            return RequestResponse( postViewModel );
+            return RequestResponse( commentViewModel );
         }
 
 
         [HttpPost( "{UserId}/{PostId}" )]
-        public async Task<ActionResult> Post( [FromBody] CommentViewModel commentViewModel , Guid UserId , Guid PostId )
+        public async Task<ActionResult<CommentViewModel>> Post( [FromBody] CommentViewModel commentViewModel , Guid UserId , Guid PostId )
         {
 
             if (!ModelState.IsValid) return RequestResponse( ModelState );
@@ -81,15 +79,15 @@ namespace Blog.api.Controllers.V1
 
             await CommentsService.Add( comment );
 
-            return RequestResponse( comment );
+            commentViewModel = Mapper.Map<CommentViewModel>( comment );
+
+            return RequestResponse( commentViewModel );
         }
 
 
         [HttpPut( "{id}" )]
-        public async Task<ActionResult> Put( [FromBody] CommentViewModel commentViewModel , Guid id )
+        public async Task<ActionResult<CommentViewModel>> Put( [FromBody] CommentViewModel commentViewModel , Guid id )
         {
-
-
 
             if (!ModelState.IsValid) return RequestResponse( ModelState );
 
@@ -115,7 +113,10 @@ namespace Blog.api.Controllers.V1
             {
                 return RequestResponse( ModelState );
             }
-            return RequestResponse( existingComment );
+
+            var commentViewModelUpdated = Mapper.Map<CommentViewModel>( existingComment );
+
+            return RequestResponse( commentViewModelUpdated );
         }
 
 

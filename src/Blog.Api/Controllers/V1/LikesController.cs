@@ -28,27 +28,27 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpGet( "likes/{page}" )]
-        public async Task<ActionResult> GetAll( int page )
+        public async Task<ActionResult<GetAllResponse<LikesViewModel>>> GetAll( int page )
         {
-            var posts = await LikesRepository.GetAll( page );
-            return RequestResponse( posts );
+            var likes = Mapper.Map<GetAllResponse<LikesViewModel>>( await LikesRepository.GetAll( page ) );
+            return RequestResponse( likes );
         }
 
         [HttpGet( "{id}" )]
-        public async Task<ActionResult> Get( Guid id )
+        public async Task<ActionResult<LikesViewModel>> Get( Guid id )
         {
-            var post = await LikesRepository.GetByID( id );
+            var like = await LikesRepository.GetByID( id );
 
-            var postViewModel = Mapper.Map<PostViewModel>( post );
+            var likeViewModel = Mapper.Map<LikesViewModel>( like );
 
-            if (post == null)
+            if (like == null)
                 return NotFound();
 
-            return RequestResponse( postViewModel );
+            return RequestResponse( likeViewModel );
         }
 
         [HttpGet( "Post/{postId}/page/{page}" )]
-        public async Task<ActionResult> GetLikesByPostID( Guid postId , int page )
+        public async Task<ActionResult<GetAllResponse<LikesViewModel>>> GetLikesByPostID( Guid postId , int page )
         {
             var likes = await LikesRepository.GetLikesByPostID( postId , page );
 
@@ -61,7 +61,7 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpGet( "User/{userId}/page/{page}" )]
-        public async Task<ActionResult> GetUserId( Guid userId , int page )
+        public async Task<ActionResult<GetAllResponse<LikesViewModel>>> GetLikesByUser( Guid userId , int page )
         {
             var likes = await LikesRepository.GetLikesByUserID( userId , page );
 
@@ -74,20 +74,20 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpGet( "{userId}/{postId}" )]
-        public async Task<ActionResult> GetUserIdPostId( string userId , Guid postId )
+        public async Task<ActionResult<LikesViewModel>> GetLikesByUserAndPost( string userId , Guid postId )
         {
-            var post = await LikesRepository.getLike( userId , postId );
+            var like = await LikesRepository.getLike( userId , postId );
 
-            var postViewModel = Mapper.Map<PostViewModel>( post );
+            var likesViewModel = Mapper.Map<LikesViewModel>( like );
 
-            if (post == null)
+            if (like == null)
                 return NotFound();
 
-            return RequestResponse( postViewModel );
+            return RequestResponse( likesViewModel );
         }
 
         [HttpPost( "{userId}/{postId}" )]
-        public async Task<ActionResult> Post( [FromBody] LikesViewModel likesViewModel , string userId , Guid postId )
+        public async Task<ActionResult<LikesViewModel>> Post( [FromBody] LikesViewModel likesViewModel , string userId , Guid postId )
         {
 
             if (userId != likesViewModel.UserId || postId != likesViewModel.PostId)
@@ -110,7 +110,7 @@ namespace Blog.api.Controllers.V1
 
             await LikesService.AddLike( like );
 
-            return RequestResponse( like );
+            return RequestResponse( likesViewModel );
         }
 
 

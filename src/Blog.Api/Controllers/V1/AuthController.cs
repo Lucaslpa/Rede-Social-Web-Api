@@ -33,7 +33,7 @@ namespace Blog.api.Controllers.V1
 
         [Route( "Registration" )]
         [HttpPost]
-        public async Task<ActionResult> Registration( [FromBody] UserViewModel UserViewModel )
+        public async Task<ActionResult<LoginResponseViewModel>> Registration( [FromBody] UserViewModel UserViewModel )
         {
             if (!ModelState.IsValid) return RequestResponse( ModelState );
 
@@ -68,7 +68,7 @@ namespace Blog.api.Controllers.V1
 
         [Route( "Login" )]
         [HttpPost]
-        public async Task<ActionResult> Login( [FromBody] LoginRequestViewModel login )
+        public async Task<ActionResult<LoginResponseViewModel>> Login( [FromBody] LoginRequestViewModel login )
         {
             if (!ModelState.IsValid) return RequestResponse( ModelState );
             var user = await UserManager.FindByEmailAsync( login.Email );

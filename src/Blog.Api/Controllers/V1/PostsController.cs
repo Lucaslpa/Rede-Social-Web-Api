@@ -27,14 +27,14 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpGet( "page/{page}" )]
-        public async Task<ActionResult> GetAll( int page )
+        public async Task<ActionResult<GetAllResponse<Post>>> GetAll( int page )
         {
-            var posts = await PostRepository.GetAll( page );
+            var posts = Mapper.Map<GetAllResponse<Post>>( await PostRepository.GetAll( page ) );
             return RequestResponse( posts );
         }
 
         [HttpGet( "{id}" )]
-        public async Task<ActionResult> Get( Guid id )
+        public async Task<ActionResult<PostViewModel>> Get( Guid id )
         {
             var post = await PostRepository.GePostCommentUser( id );
 
@@ -49,7 +49,7 @@ namespace Blog.api.Controllers.V1
 
 
         [HttpPost( "{userId}" )]
-        public async Task<ActionResult> Post( [FromBody] PostViewModel PostViewModel , string userId )
+        public async Task<ActionResult<PostViewModel>> Post( [FromBody] PostViewModel PostViewModel , string userId )
         {
 
             if (userId != PostViewModel.UserId)
@@ -64,11 +64,13 @@ namespace Blog.api.Controllers.V1
 
             await PostService.Add( post );
 
-            return RequestResponse( post );
+            var postViewModel = Mapper.Map<PostViewModel>( post );
+
+            return RequestResponse( postViewModel );
         }
 
         [HttpGet( "User/{userId}/page/{page}" )]
-        public async Task<ActionResult> GetAllCommentsByPostId( string userId , int page )
+        public async Task<ActionResult<GetAllResponse<PostViewModel>>> GetAllCommentsByPostId( string userId , int page )
         {
             var posts = Mapper.Map<GetAllResponse<PostViewModel>>( await PostRepository.GetPostsByUserID( userId , page ) );
 
@@ -76,7 +78,7 @@ namespace Blog.api.Controllers.V1
         }
 
         [HttpPut( "{id}" )]
-        public async Task<ActionResult> Put( [FromBody] PostViewModel PostViewModel , Guid id )
+        public async Task<ActionResult<PostViewModel>> Put( [FromBody] PostViewModel PostViewModel , Guid id )
         {
 
             string userId = User.FindFirst( ClaimTypes.NameIdentifier ).Value;
@@ -97,7 +99,10 @@ namespace Blog.api.Controllers.V1
             {
                 return RequestResponse( ModelState );
             }
-            return RequestResponse( existingPost );
+
+            var postViewModel = Mapper.Map<PostViewModel>( existingPost );
+
+            return RequestResponse( postViewModel );
         }
 
         [HttpDelete( "{id}" )]
