@@ -9,6 +9,9 @@ namespace Blog.api.Configuration
 
             services.AddSwaggerGen( c =>
             {
+
+
+
                 c.AddSecurityDefinition( "Bearer" , new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"" ,
@@ -17,6 +20,7 @@ namespace Blog.api.Configuration
                     Type = SecuritySchemeType.ApiKey ,
                     Scheme = "Bearer"
                 } );
+
 
                 c.AddSecurityRequirement( new OpenApiSecurityRequirement
                 {

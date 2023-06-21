@@ -8,10 +8,11 @@ using System.Security.Claims;
 
 namespace Blog.api.Controllers.V1
 {
-    [Authorize]
+
     [ApiController]
     [ApiVersion( "1" )]
     [Route( "api/v{version:apiVersion}/[controller]" )]
+    [Authorize]
     public class PostsController : Controller
     {
 

@@ -6,7 +6,7 @@ namespace Blog.api.Configuration
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection Configure( this IServiceCollection Services , IConfiguration configuration )
+        public async static Task<IServiceCollection> Configure( this IServiceCollection Services , IConfiguration configuration )
 
         {
             // Add services to the container.
@@ -18,8 +18,8 @@ namespace Blog.api.Configuration
             Services.AddAuthorization();
             Services.AddDbContext<MyDatabaseContext>();
             Services.ConfigureVersioning();
-            Services.AddIdentityConfiguration();
             Services.AddAutoMapperProfiles();
+            await Services.AddIdentityConfiguration();
             Services.ConfigureJwt( configuration );
             Services.AddCors();
 

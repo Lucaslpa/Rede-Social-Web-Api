@@ -6,8 +6,7 @@ namespace Blog.api.ViewModels
 {
     public class UserViewModel
     {
-
-        UserViewModel()
+        public UserViewModel()
         {
             DataCadastro = DateTime.Now;
         }

@@ -1,4 +1,5 @@
-﻿using Blog.Business.Models;
+﻿using Blog.api.Seed;
+using Blog.Business.Models;
 using Blog.Business.Services;
 using Blog.Data.database;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,7 @@ namespace Blog.api.Configuration
     public static class IdentityConfiguration
     {
 
-        public static IServiceCollection AddIdentityConfiguration( this IServiceCollection service )
+        public async static Task<IServiceCollection> AddIdentityConfiguration( this IServiceCollection service )
         {
             service.AddIdentity<User , IdentityRole>()
                    .AddEntityFrameworkStores<MyDatabaseContext>()
@@ -23,18 +24,9 @@ namespace Blog.api.Configuration
                 options.User.RequireUniqueEmail = true;
             } );
 
-            var serviceProvider = service.BuildServiceProvider();
+            service.SeedRoles();
 
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            if (!roleManager.RoleExistsAsync( "Admin" ).Result)
-            {
-                var resultado = roleManager.CreateAsync( new IdentityRole( "Admin" ) ).Result;
-                if (!resultado.Succeeded)
-                {
-                    throw new Exception( $"Erro durante a criação da role Admin. Erros: {resultado.Errors}" );
-                }
-            }
+            await service.SeedUsers();
 
             return service;
         }
